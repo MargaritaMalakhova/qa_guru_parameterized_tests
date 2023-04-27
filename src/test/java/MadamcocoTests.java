@@ -5,17 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Tags;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.util.List;
 import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.Selenide.executeJavaScript;
 
@@ -68,19 +64,16 @@ public class MadamcocoTests {
         $$(".product-item__info h3").first().shouldHave(text(expectedResult));
     }
 
-    @ValueSource(strings = {
-            "Cookware",
-            "Tableware",
-            "Mugs&Cups"
-    })
-    @ParameterizedTest(name = "In Section 'Gifts for Mother's Day' click item {0}")
+    @CsvFileSource(resources = "/clickableItemsTest.csv")
+    @ParameterizedTest(name = "In Section 'Gifts for Mother's Day' click item {0} should open page with title: {1}")
     @Tags({
             @Tag("BLOCKER"),
             @Tag("WEB")
     })
-    void clickableItemsTest(String itemName) {
+    void clickableItemsTest(String itemName, String expectedPageTitle) {
         $$("button.action-menu__button").find(text("EN")).click();
         $$(".triple-banner__list-item").find(text(itemName)).click();
+        $("h1").shouldHave(text(expectedPageTitle));
     }
 
 }
